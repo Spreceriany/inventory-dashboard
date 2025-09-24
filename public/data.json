@@ -1,0 +1,155 @@
+{
+  "stockData": [
+    {
+      "month": "Jan",
+      "stockLevel": 4200,
+      "demand": 1200,
+      "projected": false
+    },
+    {
+      "month": "Feb",
+      "stockLevel": 3800,
+      "demand": 1100,
+      "projected": false
+    },
+    {
+      "month": "Mar",
+      "stockLevel": 4500,
+      "demand": 1300,
+      "projected": false
+    },
+    {
+      "month": "Apr",
+      "stockLevel": 4100,
+      "demand": 1400,
+      "projected": false
+    },
+    {
+      "month": "May",
+      "stockLevel": 3700,
+      "demand": 1500,
+      "projected": false
+    },
+    {
+      "month": "Jun",
+      "stockLevel": 3200,
+      "demand": 1600,
+      "projected": false
+    },
+    {
+      "month": "Jul",
+      "stockLevel": 2800,
+      "demand": 1700,
+      "projected": false
+    },
+    {
+      "month": "Aug",
+      "stockLevel": 2400,
+      "demand": 1650,
+      "projected": false
+    },
+    {
+      "month": "Sep",
+      "stockLevel": 2000,
+      "demand": 1800,
+      "projected": false
+    },
+    {
+      "month": "Oct",
+      "stockLevel": 2500,
+      "demand": 1900,
+      "projected": true
+    },
+    {
+      "month": "Nov",
+      "stockLevel": 1800,
+      "demand": 2200,
+      "projected": true
+    },
+    {
+      "month": "Dec",
+      "stockLevel": 1200,
+      "demand": 2500,
+      "projected": true
+    }
+  ],
+  "orders": [
+    {
+      "id": "ORD-001",
+      "orderDate": "2024-09-15",
+      "quantity": 500,
+      "unitCost": 25.50,
+      "status": "planned"
+    },
+    {
+      "id": "ORD-002",
+      "orderDate": "2024-09-10",
+      "quantity": 750,
+      "unitCost": 22.00,
+      "status": "confirmed"
+    },
+    {
+      "id": "ORD-003",
+      "orderDate": "2024-09-08",
+      "quantity": 300,
+      "unitCost": 28.75,
+      "status": "delivered"
+    },
+    {
+      "id": "ORD-004",
+      "orderDate": "2024-09-05",
+      "quantity": 1200,
+      "unitCost": 20.00,
+      "status": "confirmed"
+    },
+    {
+      "id": "ORD-005",
+      "orderDate": "2024-09-01",
+      "quantity": 400,
+      "unitCost": 30.25,
+      "status": "delivered"
+    },
+    {
+      "id": "ORD-006",
+      "orderDate": "2024-08-28",
+      "quantity": 800,
+      "unitCost": 24.50,
+      "status": "delivered"
+    },
+    {
+      "id": "ORD-007",
+      "orderDate": "2024-08-25",
+      "quantity": 600,
+      "unitCost": 26.00,
+      "status": "planned"
+    },
+    {
+      "id": "ORD-008",
+      "orderDate": "2024-08-20",
+      "quantity": 900,
+      "unitCost": 21.75,
+      "status": "confirmed"
+    },
+    {
+      "id": "ORD-009",
+      "orderDate": "2024-08-15",
+      "quantity": 350,
+      "unitCost": 32.00,
+      "status": "delivered"
+    },
+    {
+      "id": "ORD-010",
+      "orderDate": "2024-08-10",
+      "quantity": 700,
+      "unitCost": 23.25,
+      "status": "delivered"
+    }
+  ],
+  "kpiMetrics": {
+    "totalOrdersValue": 156875.00,
+    "currentStockLevel": 2000,
+    "projectedStockouts": 2,
+    "serviceLevel": 87.5,
+    "lastUpdated": "2024-09-24T10:30:00Z"
+  }
+}
