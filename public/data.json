@@ -76,70 +76,70 @@
   "orders": [
     {
       "id": "ORD-001",
-      "orderDate": "2024-09-15",
+      "orderDate": "15/09/24",
       "quantity": 500,
       "unitCost": 25.50,
       "status": "planned"
     },
     {
       "id": "ORD-002",
-      "orderDate": "2024-09-10",
+      "orderDate": "10/09/24",
       "quantity": 750,
       "unitCost": 22.00,
       "status": "confirmed"
     },
     {
       "id": "ORD-003",
-      "orderDate": "2024-09-08",
+      "orderDate": "08/09/24",
       "quantity": 300,
       "unitCost": 28.75,
       "status": "delivered"
     },
     {
       "id": "ORD-004",
-      "orderDate": "2024-09-05",
+      "orderDate": "05/09/24",
       "quantity": 1200,
       "unitCost": 20.00,
       "status": "confirmed"
     },
     {
       "id": "ORD-005",
-      "orderDate": "2024-09-01",
+      "orderDate": "01/09/24",
       "quantity": 400,
       "unitCost": 30.25,
       "status": "delivered"
     },
     {
       "id": "ORD-006",
-      "orderDate": "2024-08-28",
+      "orderDate": "28/08/24",
       "quantity": 800,
       "unitCost": 24.50,
       "status": "delivered"
     },
     {
       "id": "ORD-007",
-      "orderDate": "2024-08-25",
+      "orderDate": "25/08/24",
       "quantity": 600,
       "unitCost": 26.00,
       "status": "planned"
     },
     {
       "id": "ORD-008",
-      "orderDate": "2024-08-20",
+      "orderDate": "20/08/24",
       "quantity": 900,
       "unitCost": 21.75,
       "status": "confirmed"
     },
     {
       "id": "ORD-009",
-      "orderDate": "2024-08-15",
+      "orderDate": "15/08/24",
       "quantity": 350,
       "unitCost": 32.00,
       "status": "delivered"
     },
     {
       "id": "ORD-010",
-      "orderDate": "2024-08-10",
+      "orderDate": "10/08/24",
       "quantity": 700,
       "unitCost": 23.25,
       "status": "delivered"
@@ -150,6 +150,6 @@
     "currentStockLevel": 2000,
     "projectedStockouts": 2,
     "serviceLevel": 87.5,
-    "lastUpdated": "2024-09-24T10:30:00Z"
+    "lastUpdated": "24/09/24"
   }
 }

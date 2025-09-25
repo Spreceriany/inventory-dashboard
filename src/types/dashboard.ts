@@ -1,4 +1,4 @@
-export interface OrderData {
+ export interface OrderData {
   id: string;
   orderDate: string;
   quantity: number;
@@ -7,14 +7,14 @@ export interface OrderData {
   status: 'planned' | 'confirmed' | 'delivered';
 }
 
-export interface StockData {
+ export interface StockData {
   month: string;
   stockLevel: number;
   demand: number;
   projected: boolean;
 }
 
-export interface KPIMetrics {
+ export interface KPIMetrics {
   totalOrdersValue: number;
   currentStockLevel: number;
   projectedStockouts: number;
