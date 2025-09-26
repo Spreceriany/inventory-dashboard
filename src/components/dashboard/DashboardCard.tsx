@@ -1,11 +1,34 @@
-import data from "../../../public/data.json";
-import { KPIMetrics } from "@/types/dashboard";
-interface DashboardCardProps {
-  metrics: KPIMetrics;
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
+
+interface KpiCardProps {
+  title: string;
+  value: string | number;
+  subtext?: string;
+  color?: string;
+  icon?: React.ReactNode;
 }
 
-function DasboardCard({ metrics }: DashboardCardProps) {
-  return <>{metrics.currentStockLevel}</>;
+function DasboardCard({ title, value, subtext, color, icon }: KpiCardProps) {
+  return (
+    <>
+      <Card className={` ${color ?? "bg-secondary"}`}>
+        <CardHeader>
+          {icon && icon}
+          <CardTitle className=" text-black text-2xl md:text-3xl font-bold">
+            {value}
+          </CardTitle>
+          <CardDescription>{title}</CardDescription>
+          {subtext && <CardContent>{subtext}</CardContent>}
+        </CardHeader>
+      </Card>
+    </>
+  );
 }
 
 export default DasboardCard;
