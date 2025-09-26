@@ -1,7 +1,4 @@
-import { ChartLine, ChartNoAxesColumn } from "lucide-react";
-
 import data from "../public/data.json";
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import {
   Card,
   CardContent,
@@ -9,122 +6,76 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  type ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { Button } from "./components/ui/button";
 import { OrderData, StockData, KPIMetrics } from "./types/dashboard";
 import DashboardTable from "./components/dashboard/DashBoardtable";
-const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "var(--chart-5)",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "var(--chart-2)",
-  },
-} satisfies ChartConfig;
+import DashBoardChart from "./components/dashboard/DashboardChart";
 
 const DEMAND_PERCENTAGE_MINIMUM = -50;
 const DEMAND_PERCENTAGE_MAXIMUM = 150;
-const DEMAND_PERCENTAGE_STEP = 10;
 
 function App() {
-  const [activeChart, setActiveChart] = useState("stock");
-  const [demandPercentage, setDemandPercentage] = useState<StockData>();
+  const [stockData, setStockData] = useState<StockData[]>([]);
+  const [demandAdjustment, setDemandAdjustment] = useState(0); // percentage, e.g. 20 = +20%
+  const [isAdjusting, setIsAdjusting] = useState(false);
+
+  useEffect(() => {
+    fetch("/data.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setStockData(data.stockData);
+      })
+      .catch((err) => console.error("Failed to load data.json", err));
+  }, []);
+
+  // Derive adjusted dataset
+  const adjustedData = stockData.map((d) => ({
+    ...d,
+    demand: Math.round(d.demand * (1 + demandAdjustment / 100)),
+  }));
+
+  // Increment/decrement demand adjustment, clamped to [-50, 150]
+  const changeAdjustment = (delta: number) => {
+    setIsAdjusting(true);
+
+    setTimeout(() => {
+      setDemandAdjustment((prev) => {
+        const newVal = prev + delta;
+        return Math.min(
+          DEMAND_PERCENTAGE_MAXIMUM,
+          Math.max(DEMAND_PERCENTAGE_MINIMUM, newVal)
+        );
+      });
+      setIsAdjusting(false); //
+    }, 500); // delay in ms
+  };
 
   return (
     <>
       <div className="px-4 pt-4 bg-background min-h-full">
         <Card className="grid grid-cols-2 md:grid-cols-5 px-4 mb-4 max-h-[800px] h-full">
-          <h1 className="text-3xl font-bold md:mb-4 col-span-1 self-center">
-            {activeChart === "stock" ? "Stock levels" : "Demand over time"}{" "}
+          <h1 className="text-3xl font-bold md:mb-4 col-span-full self-center">
+            Chart
           </h1>
-          <div className="flex self-center md:col-span-2 justify-self-end gap-2">
-            <Button
-              variant={activeChart === "demand" ? "default" : "secondary"}
-              onClick={() => setActiveChart("demand")}
-              className="cursor-pointer"
-            >
-              <ChartLine />
-              Demand
-            </Button>
-            <Button
-              variant={activeChart !== "stock" ? "secondary" : "default"}
-              onClick={() => setActiveChart("stock")}
-              className="cursor-pointer"
-            >
-              <ChartNoAxesColumn />
-              Stock
-            </Button>
-          </div>
+
+          {/* Chart */}
+
           <div className="flex flex-col col-span-full md:col-span-3 ">
             <Card>
-              <CardContent className="pl-0">
-                <ChartContainer
-                  config={chartConfig}
-                  className="max-h-96 w-full"
-                >
-                  <LineChart
-                    accessibilityLayer
-                    data={data.stockData}
-                    margin={{
-                      left: 10,
-                      right: 10,
-                    }}
-                  >
-                    <CartesianGrid vertical={false} />
-                    <XAxis
-                      dataKey="month"
-                      tickLine={false}
-                      axisLine={false}
-                      tickMargin={8}
-                      tickFormatter={(value) => value.slice(0, 3)}
-                    />
-
-                    <YAxis
-                      dataKey={"stockLevel"}
-                      tickLine={false}
-                      axisLine={false}
-                    />
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent hideLabel />}
-                    />
-                    <Line
-                      dataKey="stockLevel"
-                      type="natural"
-                      stroke="var(--color-desktop)"
-                      strokeWidth={2}
-                      dot={{
-                        fill: "var(--color-desktop)",
-                      }}
-                      activeDot={{
-                        r: 6,
-                      }}
-                    />
-                  </LineChart>
-                </ChartContainer>
+              <CardContent className="pl-0 relative">
+                <DashBoardChart
+                  adjustedData={adjustedData}
+                  demandAdjustment={demandAdjustment}
+                  isAdjusting={isAdjusting}
+                  onChangeAdjustment={changeAdjustment}
+                />
               </CardContent>
-              <div className=" self-center justify-center flex flex-col">
-                <p className="mb-2">Change the demand</p>
-                <div className="flex items-center justify-center gap-2">
-                  <Button variant="secondary" size="icon" className="size-8">
-                    -
-                  </Button>
-                  <div>10%</div>
-                  <Button variant="secondary" size="icon" className="size-8">
-                    +
-                  </Button>
-                </div>
-              </div>
             </Card>
           </div>
+
+          {/* KPI Cards */}
           <div className="grid grid-cols-2 col-span-full md:col-span-2 gap-4 w-full">
             <Card className="p-2">
               <CardHeader>
@@ -146,7 +97,7 @@ function App() {
             </Card>
           </div>
         </Card>
-
+        {/* Orders Table */}
         <Card className="px-4">
           <DashboardTable
             orders={data.orders.map((order: any) => ({

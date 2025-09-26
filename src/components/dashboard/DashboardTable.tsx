@@ -1,6 +1,4 @@
-// src/components/OrdersTable.tsx
-
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import {
   Table,
   TableBody,
@@ -13,7 +11,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { OrderData } from "@/types/dashboard";
-// Types based on the PDF requirements
 
 interface OrdersTableProps {
   orders: OrderData[];
