@@ -1,11 +1,5 @@
 import data from "../public/data.json";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 import { useEffect, useMemo, useState } from "react";
 import { StockData, KPIMetrics, OrderData } from "./types/dashboard";
@@ -18,51 +12,66 @@ const DEMAND_PERCENTAGE_MAXIMUM = 150;
 
 function App() {
   const [stockData, setStockData] = useState<StockData[]>([]);
+  const [orderData, setOrderData] = useState<OrderData[]>([]);
   const [kpiData, setKPIData] = useState<KPIMetrics>({} as KPIMetrics);
   const [demandAdjustment, setDemandAdjustment] = useState<number>(0); // percentage, e.g. 20 = +20%
   const [isAdjusting, setIsAdjusting] = useState<boolean>(false);
+  const [hasdDemandChanged, setHasDemandChanged] = useState<boolean>(false);
+
+  // Helper functions for KPI calculations
+  const calculateTotalOrdersValue = (orders: OrderData[]): number => {
+    return orders.reduce(
+      (sum: number, order: OrderData) => sum + order.quantity * order.unitCost,
+      0
+    );
+  };
+
+  const calculateCurrentStockLevel = (orders: OrderData[]): number => {
+    return orders.reduce(
+      (sum: number, order: OrderData) =>
+        order.status === "delivered" || order.status === "confirmed"
+          ? sum + order.quantity
+          : sum,
+      0
+    );
+  };
+
+  const calculateProjectedStockouts = (stockData: StockData[]): number => {
+    return stockData.reduce((acc: number, d: StockData) => {
+      if (d.projected && d.stockLevel < d.demand) {
+        return acc + (d.demand - d.stockLevel);
+      }
+      return acc;
+    }, 0);
+  };
+
+  // Main data processing function
+  const processLoadedData = (data: any) => {
+    const totalOrdersValue = calculateTotalOrdersValue(data.orders);
+    const currentStockLevel = calculateCurrentStockLevel(data.orders);
+    const projectedStockouts = calculateProjectedStockouts(data.stockData);
+
+    // Update state
+    setStockData(data.stockData);
+    setOrderData(data.orders);
+    setKPIData({
+      totalOrdersValue,
+      currentStockLevel,
+      projectedStockouts,
+      serviceLevel: data.kpiMetrics.serviceLevel,
+      lastUpdated: data.kpiMetrics.lastUpdated,
+    });
+  };
 
   useEffect(() => {
     fetch("/data.json")
       .then((res) => res.json())
-      .then((data) => {
-        const totalOrdersValue = data.orders.reduce(
-          (sum: number, order: OrderData) =>
-            sum + order.quantity * order.unitCost,
-          0
-        );
-        const currentStockLevel = data.orders.reduce(
-          (sum: number, order: OrderData) =>
-            order.status === "delivered" || order.status === "confirmed"
-              ? sum + order.quantity
-              : sum,
-          0
-        );
-
-        const totalDifference = data.stockData.reduce(
-          (acc: number, d: StockData) => {
-            if (d.projected && d.stockLevel < d.demand) {
-              return acc + (d.demand - d.stockLevel);
-            }
-            return acc;
-          },
-          0
-        );
-        setStockData(data.stockData);
-
-        setKPIData({
-          totalOrdersValue,
-          currentStockLevel,
-          projectedStockouts: totalDifference,
-          serviceLevel: demandAdjustment, // Placeholder, replace with real calculation if needed
-          lastUpdated: new Date().toISOString(),
-        });
-      })
+      .then(processLoadedData)
       .catch((err) => console.error("Failed to load data.json", err));
   }, []);
 
-  // Derive adjusted dataset
-  const adjustedData = stockData.map((d) => {
+  //De
+  const adjustedStockData = stockData.map((d) => {
     const adjustedDemand = Math.round(d.demand * (1 + demandAdjustment / 100));
     return {
       ...d,
@@ -72,38 +81,40 @@ function App() {
   });
 
   const formatTimestamp = (): string => {
-    const now = new Date();
-    return now.toLocaleString("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
+    if (hasdDemandChanged) {
+      const now = new Date();
+      return now.toLocaleString("en-GB", {
+        day: "numeric",
+        month: "short",
+
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
+    } else {
+      return kpiData.lastUpdated;
+    }
   };
 
-  const ps = useMemo(() => {
-    return adjustedData.reduce((acc, d) => {
+  const adjustedProjectedStockouts = useMemo(() => {
+    return adjustedStockData.reduce((acc: number, d: StockData) => {
       if (d.projected && d.stockLevel < d.demand) {
         return acc + (d.demand - d.stockLevel);
       }
       return acc;
     }, 0);
-  }, [adjustedData]);
+  }, [adjustedStockData]);
 
-  const newTime = formatTimestamp();
   const adjustedKPIDate: KPIMetrics = {
     ...kpiData,
-    projectedStockouts: ps,
+    projectedStockouts: adjustedProjectedStockouts,
     serviceLevel: demandAdjustment,
-    lastUpdated: newTime,
+    lastUpdated: formatTimestamp(),
   };
 
   // Increment/decrement demand adjustment, clamped to [-50, 150]
   const changeAdjustment = (delta: number) => {
     setIsAdjusting(true);
-
     setTimeout(() => {
       setDemandAdjustment((prev) => {
         const newVal = prev + delta;
@@ -112,7 +123,7 @@ function App() {
           Math.max(DEMAND_PERCENTAGE_MINIMUM, newVal)
         );
       });
-
+      setHasDemandChanged(true);
       setIsAdjusting(false); //
     }, 500); // delay in ms
   };
@@ -131,7 +142,7 @@ function App() {
             <Card className="min-h-fit">
               <CardContent className="pl-0 relative">
                 <DashBoardChart
-                  adjustedData={adjustedData}
+                  adjustedData={adjustedStockData}
                   demandAdjustment={demandAdjustment}
                   isAdjusting={isAdjusting}
                   onChangeAdjustment={changeAdjustment}
@@ -145,12 +156,7 @@ function App() {
         </Card>
         {/* Orders Table */}
         <Card className="px-4">
-          <DashboardTable
-            orders={data.orders.map((order: any) => ({
-              ...order,
-              totalCost: order.quantity * order.unitCost,
-            }))}
-          />
+          <DashboardTable orders={orderData} />
         </Card>
       </div>
     </>
