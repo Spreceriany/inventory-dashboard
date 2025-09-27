@@ -1,11 +1,10 @@
-import data from "../public/data.json";
 import { Card, CardContent } from "@/components/ui/card";
 
 import { useEffect, useMemo, useState } from "react";
 import { StockData, KPIMetrics, OrderData } from "./types/dashboard";
-import DashboardTable from "./components/dashboard/DashBoardtable";
-import DashBoardChart from "./components/dashboard/DashboardChart";
-import DashboardCardGrid from "./components/dashboard/DashboardCardGrid";
+import DashboardTable from "@/components/dashboard/DashBoardtable";
+import DashBoardChart from "@/components/dashboard/DashboardChart";
+import DashboardCardGrid from "@/components/dashboard/DashboardCardGrid";
 
 const DEMAND_PERCENTAGE_MINIMUM = -50;
 const DEMAND_PERCENTAGE_MAXIMUM = 150;
@@ -86,7 +85,6 @@ function App() {
       return now.toLocaleString("en-GB", {
         day: "numeric",
         month: "short",
-
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
