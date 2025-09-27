@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 import { useEffect, useMemo, useState } from "react";
 import { StockData, KPIMetrics, OrderData } from "./types/dashboard";
-import DashboardTable from "@/components/dashboard/DashBoardtable";
+import DashboardTable from "@/components/dashboard/DashboardTable";
 import DashBoardChart from "@/components/dashboard/DashboardChart";
 import DashboardCardGrid from "@/components/dashboard/DashboardCardGrid";
 
@@ -69,7 +69,6 @@ function App() {
       .catch((err) => console.error("Failed to load data.json", err));
   }, []);
 
-  //De
   const adjustedStockData = stockData.map((d) => {
     const adjustedDemand = Math.round(d.demand * (1 + demandAdjustment / 100));
     return {
