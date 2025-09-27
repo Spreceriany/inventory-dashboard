@@ -23,7 +23,7 @@ function DasboardCard({ title, value, subtext, color, icon }: KpiCardProps) {
           <CardTitle className=" text-black text-2xl md:text-3xl font-bold">
             {value}
           </CardTitle>
-          <CardDescription>{title}</CardDescription>
+          <CardDescription className="text-gray-700">{title}</CardDescription>
           {subtext && <CardContent>{subtext}</CardContent>}
         </CardHeader>
       </Card>

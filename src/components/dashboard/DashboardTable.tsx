@@ -47,8 +47,8 @@ function DashBoardtable({ orders }: OrdersTableProps) {
     if (!sortField || !sortDirection) return orders;
 
     return [...orders].sort((a, b) => {
-      let aValue: any;
-      let bValue: any;
+      let aValue: Date | number;
+      let bValue: Date | number;
 
       if (sortField === "orderDate") {
         aValue = new Date(a.orderDate);
@@ -56,6 +56,8 @@ function DashBoardtable({ orders }: OrdersTableProps) {
       } else if (sortField === "quantity") {
         aValue = a.quantity;
         bValue = b.quantity;
+      } else {
+        return 0;
       }
 
       if (sortDirection === "asc") {

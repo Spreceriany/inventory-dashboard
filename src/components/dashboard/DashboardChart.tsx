@@ -67,12 +67,14 @@ function DashBoardChart({
             />
             <Area
               dataKey="stockLevel"
+              name="Stock"
               type="natural"
               fillOpacity={0.4}
               stackId="a"
             />
             <Area
               dataKey="demand"
+              name="Demand"
               type="natural"
               fill="var(--color-desktop)"
               fillOpacity={0.4}

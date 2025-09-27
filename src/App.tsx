@@ -5,7 +5,7 @@ import { StockData, KPIMetrics, OrderData } from "./types/dashboard";
 import DashboardTable from "@/components/dashboard/DashboardTable";
 import DashBoardChart from "@/components/dashboard/DashboardChart";
 import DashboardCardGrid from "@/components/dashboard/DashboardCardGrid";
-
+import { kpiCalculations } from "@/utils/calculations";
 const DEMAND_PERCENTAGE_MINIMUM = -50;
 const DEMAND_PERCENTAGE_MAXIMUM = 150;
 
@@ -17,38 +17,13 @@ function App() {
   const [isAdjusting, setIsAdjusting] = useState<boolean>(false);
   const [hasdDemandChanged, setHasDemandChanged] = useState<boolean>(false);
 
-  // Helper functions for KPI calculations
-  const calculateTotalOrdersValue = (orders: OrderData[]): number => {
-    return orders.reduce(
-      (sum: number, order: OrderData) => sum + order.quantity * order.unitCost,
-      0
-    );
-  };
-
-  const calculateCurrentStockLevel = (orders: OrderData[]): number => {
-    return orders.reduce(
-      (sum: number, order: OrderData) =>
-        order.status === "delivered" || order.status === "confirmed"
-          ? sum + order.quantity
-          : sum,
-      0
-    );
-  };
-
-  const calculateProjectedStockouts = (stockData: StockData[]): number => {
-    return stockData.reduce((acc: number, d: StockData) => {
-      if (d.projected && d.stockLevel < d.demand) {
-        return acc + (d.demand - d.stockLevel);
-      }
-      return acc;
-    }, 0);
-  };
-
   // Main data processing function
   const processLoadedData = (data: any) => {
-    const totalOrdersValue = calculateTotalOrdersValue(data.orders);
-    const currentStockLevel = calculateCurrentStockLevel(data.orders);
-    const projectedStockouts = calculateProjectedStockouts(data.stockData);
+    const totalOrdersValue = kpiCalculations.totalOrdersValue(data.orders);
+    const currentStockLevel = kpiCalculations.currentStockLevel(data.orders);
+    const projectedStockouts = kpiCalculations.projectedStockouts(
+      data.stockData
+    );
 
     // Update state
     setStockData(data.stockData);
@@ -81,13 +56,16 @@ function App() {
   const formatTimestamp = (): string => {
     if (hasdDemandChanged) {
       const now = new Date();
-      return now.toLocaleString("en-GB", {
-        day: "numeric",
-        month: "short",
+
+      const day = now.getDate();
+      const month = now.toLocaleString("en-GB", { month: "short" });
+      const time = now.toLocaleTimeString("en-GB", {
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
       });
+
+      return `${day} ${month} ${time}`; // 👉 no comma/dash
     } else {
       return kpiData.lastUpdated;
     }
