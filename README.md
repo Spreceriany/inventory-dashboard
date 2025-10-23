@@ -1,5 +1,8 @@
 # Supply Chain Planning Dashboard
 
+[![CI/CD Pipeline](https://github.com/patrik/supply-chain-dashboard/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/patrik/supply-chain-dashboard/actions)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/YOUR_NETLIFY_BADGE_ID/deploy-status)](https://app.netlify.com/sites/YOUR_SITE_NAME/deploys)
+
 A responsive React TypeScript dashboard for inventory planning and supply chain analytics, built with shadcn/ui components and Recharts visualizations.
 
 <img width="1304" height="678" alt="Screenshot 2025-09-27 at 19 01 23" src="https://github.com/user-attachments/assets/34043b41-5152-4124-b411-d66dc56841e8" />
