@@ -18,7 +18,7 @@ function App() {
   const [hasdDemandChanged, setHasDemandChanged] = useState<boolean>(false);
 
   // Main data processing function
-  const processLoadedData = (data: any) => {
+  const processLoadedData = (data: { orders: OrderData[]; stockData: StockData[]; kpiMetrics: KPIMetrics }) => {
     const totalOrdersValue = kpiCalculations.totalOrdersValue(data.orders);
     const currentStockLevel = kpiCalculations.currentStockLevel(data.orders);
     const projectedStockouts = kpiCalculations.projectedStockouts(
